@@ -42,7 +42,7 @@ public class WebhookEvent {
     private WebhookEventStatus status;
 
     @Column(nullable = false)
-    private Integer attempts;
+    private Integer attempts = 0;
 
     private LocalDateTime nextRetryAt;
 
@@ -51,7 +51,7 @@ public class WebhookEvent {
     @Column(nullable = false)
     private Integer lastResponseCode;
 
-    @Column(nullable = false,length = 20)
+    @Column(nullable = false,length = 1000)
     private String lastResponseBody;
 
     private LocalDateTime deliveredAt;
