@@ -2,6 +2,7 @@ package com.chatterjee.sayan.payzapp.merchant.services.impl;
 
 import com.chatterjee.sayan.payzapp.common.enums.MerchantStatus;
 import com.chatterjee.sayan.payzapp.common.enums.UserRole;
+import com.chatterjee.sayan.payzapp.common.exceptions.DuplicateResourceException;
 import com.chatterjee.sayan.payzapp.merchant.dtos.request.MerchantSignUpRequest;
 import com.chatterjee.sayan.payzapp.merchant.dtos.response.MerchantResponse;
 import com.chatterjee.sayan.payzapp.merchant.entities.AppUser;
@@ -12,6 +13,7 @@ import com.chatterjee.sayan.payzapp.merchant.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -23,10 +25,11 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
+    @Transactional
     public MerchantResponse signUp(MerchantSignUpRequest merchantSignUpRequest) {
         // Check if the merchant already exists or not
         if(merchantRepository.existsByEmail(merchantSignUpRequest.email())){
-            throw  new RuntimeException("Email already exists :" +  merchantSignUpRequest.email());
+            throw new DuplicateResourceException("DUPLICATE_MERCHANT_EMAIL","Email already exists :" +  merchantSignUpRequest.email());
         }
 
         // create a merchant
