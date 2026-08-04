@@ -1,0 +1,11 @@
+package com.chatterjee.sayan.payzapp.merchant.repositories;
+
+import com.chatterjee.sayan.payzapp.merchant.entities.ApiKey;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+@Repository
+public interface ApiKeyRepository extends JpaRepository<ApiKey, UUID> {
+}
