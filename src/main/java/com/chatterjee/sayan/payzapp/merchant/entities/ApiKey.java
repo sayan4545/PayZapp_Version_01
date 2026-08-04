@@ -28,10 +28,14 @@ public class ApiKey {
     @Column(nullable = false,length = 200)
     private String keySecretHash;
 
+    @Column(length = 200)
+    private String previousKeySecretHash;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Environment environment;
     @Column(nullable = false)
+    @Builder.Default
     private Boolean enabled = true;
 
     private LocalDateTime lastUsedAt;

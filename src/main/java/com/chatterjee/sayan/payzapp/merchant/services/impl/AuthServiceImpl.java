@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
         // TODO : Use mapstruct to design the response type
 
         return new MerchantResponse(merchant.getId(), merchant.getName(),
-                merchant.getName(), merchant.getBusinessName(),merchant.getBusinessType()
+                merchant.getEmail(), merchant.getBusinessName(),merchant.getBusinessType()
         ,merchant.getMerchantStatus());
     }
 }

@@ -34,11 +34,14 @@ public class OrderRecord {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false,length = 20)
     private OrderStatus orderStatus = OrderStatus.CREATED;
+
     @Column(nullable = false)
     private Integer attempts = 0;
+
     @JdbcTypeCode((SqlTypes.JSON))
     @Column(columnDefinition = "jsonb")
     private Map<String, Object>  notes;
+
     @Column(name = "created_at",nullable = false)
     private LocalDateTime expiresAt;
 }

@@ -24,19 +24,23 @@ public class Merchant {
     @Column(nullable = false,length = 200)
     private String BusinessName;
 
-    @Column(nullable = false,unique = true)
+    @Column(unique = true)
     private String email;
-    @Column(nullable = false,length = 12)
+
+    @Column(length = 12)
     private String phone;
-    @Column(nullable = false,length = 12)
+
+    @Column(length = 12)
     private String gstId;
-    @Column(nullable = false)
+
+    @Column(length = 20)
     private String pan;
 
 
     @Enumerated(EnumType.STRING)
     private BusinessType businessType;
-    @Column(nullable = false)
+
+    @Column(length = 200)
     private String businessWebsiteUrl;
 
 //    @OneToMany(mappedBy = "id")
@@ -47,11 +51,11 @@ public class Merchant {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MerchantStatus merchantStatus = MerchantStatus.PENDING_KYC;
-    @Column(nullable = false)
+    @Column(unique = true, length = 16)
     private String settlementBankAccountId;
-    @Column(nullable = false)
+    @Column(length = 30)
     private String settlementBankAccountIfsc;
-    @Column(nullable = false)
+    @Column(length = 30)
     private String settlementBankAccountHolderName;
 
     // Todo : add auditing layer by extending a base class and add createdAt, updateAt fields
