@@ -2,21 +2,23 @@ package com.chatterjee.sayan.payzapp.common.entities;
 
 
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 public class Money {
 
     private int amountInUnits;
     private String currency;
 
-    private Money(int amountInUnits, String currency) {
-        this.amountInUnits = amountInUnits;
-        this.currency = currency;
-    }
+//    private Money(int amountInUnits, String currency) {
+//        this.amountInUnits = amountInUnits;
+//        this.currency = currency;
+//    }
 
     public static Money of(int amountInUnits, String currency) {
         return new Money(amountInUnits, currency);
