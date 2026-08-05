@@ -31,11 +31,15 @@ public class OrderRecord {
     @Embedded
     private Money amount;
 
+    @Column(length = 200)
+    private String receipt;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false,length = 20)
     private OrderStatus orderStatus = OrderStatus.CREATED;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer attempts = 0;
 
     @JdbcTypeCode((SqlTypes.JSON))
