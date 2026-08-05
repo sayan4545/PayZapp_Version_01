@@ -23,6 +23,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ApiKeyServiceImpl implements ApiKeyService {
 
     private final ApiKeyRepository apiKeyRepository;
@@ -40,10 +41,10 @@ public class ApiKeyServiceImpl implements ApiKeyService {
                 .environment()
                 .name()
                 .toUpperCase()+
-                RandomizerUtil.randomBase64(48);
+                RandomizerUtil.randomBase64(24);
 
         //String rawSecret = "big_random_secret"; // TODO : use cryptographic random hex
-        String rawSecret = RandomizerUtil.randomBase64(96);
+        String rawSecret = RandomizerUtil.randomBase64(48);
 
         ApiKey apiKey = ApiKey
                 .builder()
@@ -76,7 +77,6 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     }
 
     @Override
-    @Transactional
     public void revoke(UUID merchantId, UUID keyId) {
         ApiKey apiKey = apiKeyRepository
                 .findById(keyId)
@@ -94,6 +94,9 @@ public class ApiKeyServiceImpl implements ApiKeyService {
                 .findById(keyId)
                 .filter(key-> key.getMerchant().getId().equals(merchantId))
                 .orElseThrow(()-> new ResourceNotFoundException("apiKey", keyId));
+
+        // Check if the api key is revoked or not
+        if(!apiKey.getEnabled()) throw new RuntimeException("Cannot rotate a revoked api key");
 
         String newRawSecret = RandomizerUtil.randomBase64(96);
         apiKey.setPreviousKeySecretHash(apiKey.getKeySecretHash());
