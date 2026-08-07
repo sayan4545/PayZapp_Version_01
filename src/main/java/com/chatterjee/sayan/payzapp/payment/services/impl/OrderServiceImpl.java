@@ -9,6 +9,7 @@ import com.chatterjee.sayan.payzapp.payment.dto.response.OrderResponse;
 import com.chatterjee.sayan.payzapp.payment.dto.response.PaymentResponse;
 import com.chatterjee.sayan.payzapp.payment.entities.OrderRecord;
 import com.chatterjee.sayan.payzapp.payment.entities.Payment;
+import com.chatterjee.sayan.payzapp.payment.mapper.OrderMapper;
 import com.chatterjee.sayan.payzapp.payment.mapper.PaymentMapper;
 import com.chatterjee.sayan.payzapp.payment.repositories.OrderRepository;
 import com.chatterjee.sayan.payzapp.payment.repositories.PaymentRepository;
@@ -32,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final PaymentRepository  paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final OrderMapper orderMapper;
 
     @Value("${payment_default_timeout_in_mins : 30}")
     private int defaultExpiryMins;
@@ -54,15 +56,17 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(order);
 
-        return new OrderResponse(order.getId(),
-                merchantId,
-                order.getReceipt(),
-                order.getAmount(),
-                order.getOrderStatus(),
-                order.getAttempts(),
-                order.getNotes(),
-                order.getExpiresAt(),
-                null);
+        return orderMapper.toOrderResponse(order);
+
+//        return new OrderResponse(order.getId(),
+//                merchantId,
+//                order.getReceipt(),
+//                order.getAmount(),
+//                order.getOrderStatus(),
+//                order.getAttempts(),
+//                order.getNotes(),
+//                order.getExpiresAt(),
+//                null);
 
 
 
@@ -99,16 +103,19 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         // return the orderResponse object
-        // TODO : use mapstruct
-        return new OrderResponse(order.getId()
-                ,order.getMerchantId(),
-                order.getReceipt(),
-                order.getAmount(),
-                order.getOrderStatus(),
-                order.getAttempts(),
-                order.getNotes(),
-                order.getExpiresAt(),
-                null ); // TODO : to be populated while auditing)
+        // TODO : use mapstruct // done
+//        return new OrderResponse(order.getId()
+//                ,order.getMerchantId(),
+//                order.getReceipt(),
+//                order.getAmount(),
+//                order.getOrderStatus(),
+//                order.getAttempts(),
+//                order.getNotes(),
+//                order.getExpiresAt(),
+//                null ); // TODO : to be populated while auditing)
+        return  orderMapper.toOrderResponse(order);
+
+
 
     }
 
@@ -129,7 +136,8 @@ public class OrderServiceImpl implements OrderService {
 //                .toList();
 
 
-        //2 . use mapstruct
+        //2 .  TODO :use mapstruct  // done
+
 
 //        return paymentList
 //                .stream()
