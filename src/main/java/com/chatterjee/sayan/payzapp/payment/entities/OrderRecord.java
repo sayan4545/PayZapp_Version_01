@@ -18,7 +18,10 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@Table(name = "order_records")
+@Table(name = "order_records",indexes = {
+        @Index(name = "idx_order_record_merchant_id_id",columnList = "id,merchant_id"),
+        @Index(name = "idx_order_record_merchant_id",columnList = "merchant_id")
+})
 public class OrderRecord {
 
     @Id
