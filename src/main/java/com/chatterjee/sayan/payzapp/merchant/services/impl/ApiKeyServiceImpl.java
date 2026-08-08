@@ -7,6 +7,7 @@ import com.chatterjee.sayan.payzapp.merchant.dtos.response.ApiKeyGetResponse;
 import com.chatterjee.sayan.payzapp.merchant.dtos.response.ApiKeyResponse;
 import com.chatterjee.sayan.payzapp.merchant.entities.ApiKey;
 import com.chatterjee.sayan.payzapp.merchant.entities.Merchant;
+import com.chatterjee.sayan.payzapp.merchant.mapper.ApiKeyMapper;
 import com.chatterjee.sayan.payzapp.merchant.repositories.ApiKeyRepository;
 import com.chatterjee.sayan.payzapp.merchant.repositories.MerchantRepository;
 import com.chatterjee.sayan.payzapp.merchant.services.ApiKeyService;
@@ -28,6 +29,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     private final ApiKeyRepository apiKeyRepository;
     private final MerchantRepository merchantRepository;
+    private final ApiKeyMapper apiKeyMapper;
 
     @Override
     @Transactional
@@ -64,15 +66,18 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     public List<ApiKeyGetResponse> getAllApiKeys(UUID merchantId) {
 
         List<ApiKey> apiKeys = apiKeyRepository.findByMerchant_id(merchantId);
-        return apiKeys.stream()
-                .map(apiKey ->
-                        new ApiKeyGetResponse(apiKey.getId()
-                                ,apiKey.getKeyId(),
-                                apiKey.getEnvironment(),
-                                apiKey.getEnabled(),
-                                apiKey.getLastUsedAt(),
-                                null // TODO : createdAt will be populated after auditing
-                )).toList();
+
+//        return apiKeys.stream()
+//                .map(apiKey ->
+//                        new ApiKeyGetResponse(apiKey.getId()
+//                                ,apiKey.getKeyId(),
+//                                apiKey.getEnvironment(),
+//                                apiKey.getEnabled(),
+//                                apiKey.getLastUsedAt(),
+//                                null // TODO : createdAt will be populated after auditing
+//                )).toList();
+
+        return apiKeyMapper.toResponseList(apiKeys);
 
     }
 

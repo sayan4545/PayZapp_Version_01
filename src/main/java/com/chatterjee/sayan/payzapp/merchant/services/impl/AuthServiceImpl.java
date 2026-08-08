@@ -7,6 +7,7 @@ import com.chatterjee.sayan.payzapp.merchant.dtos.request.MerchantSignUpRequest;
 import com.chatterjee.sayan.payzapp.merchant.dtos.response.MerchantResponse;
 import com.chatterjee.sayan.payzapp.merchant.entities.AppUser;
 import com.chatterjee.sayan.payzapp.merchant.entities.Merchant;
+import com.chatterjee.sayan.payzapp.merchant.mapper.MerchantMapper;
 import com.chatterjee.sayan.payzapp.merchant.repositories.AppUserRepository;
 import com.chatterjee.sayan.payzapp.merchant.repositories.MerchantRepository;
 import com.chatterjee.sayan.payzapp.merchant.services.AuthService;
@@ -23,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final MerchantRepository merchantRepository;
     private final AppUserRepository appUserRepository;
+    private final MerchantMapper merchantMapper;
 
 
     @Override
@@ -34,13 +36,15 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // create a merchant
-        Merchant merchant = Merchant.builder()
-                .name(merchantSignUpRequest.name())
-                .email(merchantSignUpRequest.email())
-                .BusinessName(merchantSignUpRequest.businessName())
-                .merchantStatus(MerchantStatus.PENDING_KYC)
-                .businessType(merchantSignUpRequest.businessType())
-                .build();
+//        Merchant merchant = Merchant.builder()
+//                .name(merchantSignUpRequest.name())
+//                .email(merchantSignUpRequest.email())
+//                .BusinessName(merchantSignUpRequest.businessName())
+//                .merchantStatus(MerchantStatus.PENDING_KYC)
+//                .businessType(merchantSignUpRequest.businessType())
+//                .build();
+        Merchant merchant = merchantMapper.toEntity(merchantSignUpRequest);
+        merchant.setMerchantStatus(MerchantStatus.PENDING_KYC);
         // Persist the merchant
 
         merchantRepository.save(merchant);
@@ -57,10 +61,11 @@ public class AuthServiceImpl implements AuthService {
 
         appUserRepository.save(appUser);
 
-        // TODO : Use mapstruct to design the response type
+        // TODO : Use mapstruct to design the response type // DONE
 
-        return new MerchantResponse(merchant.getId(), merchant.getName(),
-                merchant.getEmail(), merchant.getBusinessName(),merchant.getBusinessType()
-        ,merchant.getMerchantStatus());
+//        return new MerchantResponse(merchant.getId(), merchant.getName(),
+//                merchant.getEmail(), merchant.getBusinessName(),merchant.getBusinessType()
+//        ,merchant.getMerchantStatus());
+        return merchantMapper.toResponse(merchant);
     }
 }
