@@ -23,6 +23,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.of(errorCode, exception.getMessage()));
     }
 
+    @ExceptionHandler(BusinessRuleViolationException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessRuleViolationException(BusinessRuleViolationException exception){
+        String errorCode = exception.getErrorCode().toUpperCase()+"BAD_REQUEST";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of(errorCode, exception.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
