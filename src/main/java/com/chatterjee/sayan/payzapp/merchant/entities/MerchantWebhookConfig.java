@@ -6,7 +6,9 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "merchant_webhook_config")
+@Table(name = "merchant_webhook_config",indexes = {
+        @Index(name = "idx_webhook_config_merchant_id_enabled",columnList = "merchant_id,enabled")
+})
 @Getter
 @Setter
 @AllArgsConstructor

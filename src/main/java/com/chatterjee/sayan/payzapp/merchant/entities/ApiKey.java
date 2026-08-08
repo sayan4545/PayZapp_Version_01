@@ -13,7 +13,10 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@Table(name = "api_key")
+@Table(name = "api_key", indexes = {
+        @Index(name = "idx_apiKey_merchant_id",columnList = "merchant_id"),
+        @Index(name = "idx_apiKey_merchant_env_enabled",columnList = "merchant_id,environment,enabled")
+})
 public class ApiKey {
 
     @Id
