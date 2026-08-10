@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.payment.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
 import com.chatterjee.sayan.payzapp.common.entities.Money;
 import com.chatterjee.sayan.payzapp.common.enums.RefundStatus;
 import jakarta.persistence.*;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Refund {
+public class Refund extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.payment.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
 import com.chatterjee.sayan.payzapp.common.entities.Money;
 import com.chatterjee.sayan.payzapp.common.enums.PaymentMethod;
 import com.chatterjee.sayan.payzapp.common.enums.PaymentStatus;
@@ -24,13 +25,13 @@ import static jakarta.persistence.GenerationType.UUID;
         @Index(name = "idx_payment_order_id",columnList = "order_id"),
         @Index(name = "idx_payment_merchant_id",columnList = "merchant_id")
 })
-public class Payment {
+public class Payment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = UUID)
     private UUID id;
     @Embedded
-    private Money money;
+    private Money amount;
 
     // One order can have many payments . Many payments to One order
 
@@ -60,6 +61,9 @@ public class Payment {
 
     @Column(length = 100)
     private String bankReference;
+
+    @Column(length = 100)
+    private String processorReference;
 
     @Column(length = 100)
     private String errorCode;

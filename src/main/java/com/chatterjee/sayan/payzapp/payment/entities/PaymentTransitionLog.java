@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.payment.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
 import com.chatterjee.sayan.payzapp.common.enums.PaymentActor;
 import com.chatterjee.sayan.payzapp.common.enums.PaymentEvent;
 import com.chatterjee.sayan.payzapp.common.enums.PaymentStatus;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PaymentTransitionLog {
+public class PaymentTransitionLog extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
