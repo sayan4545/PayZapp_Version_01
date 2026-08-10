@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.merchant.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
 import com.chatterjee.sayan.payzapp.common.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class AppUser {
+public class AppUser extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

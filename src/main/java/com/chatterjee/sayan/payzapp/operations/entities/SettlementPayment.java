@@ -1,5 +1,7 @@
 package com.chatterjee.sayan.payzapp.operations.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
+import com.chatterjee.sayan.payzapp.payment.entities.Payment;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "settlement_payment")
 @Builder
-public class SettlementPayment {
+public class SettlementPayment extends BaseEntity {
 
     @EmbeddedId
     private SettlementPaymentId settlementPaymentId;

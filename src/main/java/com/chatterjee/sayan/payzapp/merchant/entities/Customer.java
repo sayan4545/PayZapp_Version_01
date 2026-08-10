@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.merchant.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class Customer {
+public class Customer extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.operations.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
 import com.chatterjee.sayan.payzapp.common.enums.WebhookEventStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Table(name = "webhook_event")
-public class WebhookEvent {
+public class WebhookEvent extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

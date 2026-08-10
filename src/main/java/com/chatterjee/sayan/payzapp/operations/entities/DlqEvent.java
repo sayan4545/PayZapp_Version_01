@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.operations.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Table(name = "Dlq_Event")
-public class DlqEvent {
+public class DlqEvent extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

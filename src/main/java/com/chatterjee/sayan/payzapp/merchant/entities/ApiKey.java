@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.merchant.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
 import com.chatterjee.sayan.payzapp.common.enums.Environment;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +18,7 @@ import java.util.UUID;
         @Index(name = "idx_apiKey_merchant_id",columnList = "merchant_id"),
         @Index(name = "idx_apiKey_merchant_env_enabled",columnList = "merchant_id,environment,enabled")
 })
-public class ApiKey {
+public class ApiKey extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

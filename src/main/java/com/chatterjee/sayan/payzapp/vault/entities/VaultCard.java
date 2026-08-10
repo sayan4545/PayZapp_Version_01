@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.vault.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import static jakarta.persistence.GenerationType.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class VaultCard {
+public class VaultCard extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = UUID)

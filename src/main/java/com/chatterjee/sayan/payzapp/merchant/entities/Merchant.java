@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.merchant.entities;
 
+import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
 import com.chatterjee.sayan.payzapp.common.enums.BusinessType;
 import com.chatterjee.sayan.payzapp.common.enums.MerchantStatus;
 import jakarta.persistence.*;
@@ -10,14 +11,14 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "merchant",indexes = {
-        @Index(name = "idx_merchant_status",columnList = "status")
+        @Index(name = "idx_merchant_status",columnList = "merchantStatus")
 })
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class Merchant {
+public class Merchant extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
