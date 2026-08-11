@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -42,5 +44,10 @@ public class InternetBankingPaymentAdapter implements PaymentAdapter {
             log.warn("Net Banking failed, paymentId : {}",paymentRequest.paymentId());
             return new PaymentResult.Failure("Net Banking failed",e.getMessage());
         }
+    }
+
+    @Override
+    public PaymentResult capture(UUID paymentId) {
+        return new PaymentResult.Success("NBK_REF");
     }
 }

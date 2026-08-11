@@ -25,6 +25,10 @@ public class PaymentController {
     public ResponseEntity<PaymentResponse> initiatePayment(@Valid @RequestBody InitPaymentRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(paymentService.initiatePayment(merchantId, request));
     }
+    @PostMapping("/{paymentId}")
+    public ResponseEntity<PaymentResponse> capture(@PathVariable UUID paymentId){
+        return ResponseEntity.ok(paymentService.capture(merchantId,paymentId));
+    }
 
 
 }
