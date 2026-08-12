@@ -1,6 +1,7 @@
 package com.chatterjee.sayan.payzapp.vault.entities;
 
 import com.chatterjee.sayan.payzapp.common.entities.BaseEntity;
+import com.chatterjee.sayan.payzapp.common.enums.CardBrand;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,7 +36,8 @@ public class VaultCard extends BaseEntity {
     private byte[] encryptedDek;
 
     @Column(nullable = false)
-    private String brand;
+    @Enumerated(EnumType.STRING)
+    private CardBrand brand;
 
     @Column(nullable = false)
     private String expiryMonth;
@@ -45,6 +47,7 @@ public class VaultCard extends BaseEntity {
 
     @Column(nullable = false)
     private String cardHolderName;
+
     private LocalDateTime deletedAt;
 
 
