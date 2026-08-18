@@ -9,6 +9,7 @@ import com.chatterjee.sayan.payzapp.payment.dto.request.InitPaymentRequest;
 import com.chatterjee.sayan.payzapp.payment.dto.response.PaymentResponse;
 import com.chatterjee.sayan.payzapp.payment.entities.OrderRecord;
 import com.chatterjee.sayan.payzapp.payment.entities.Payment;
+import com.chatterjee.sayan.payzapp.payment.gateway.Adapter.PaymentAdapter;
 import com.chatterjee.sayan.payzapp.payment.gateway.PaymentGatewayRouter;
 import com.chatterjee.sayan.payzapp.payment.gateway.dto.PaymentRequest;
 import com.chatterjee.sayan.payzapp.payment.gateway.dto.PaymentResult;
@@ -36,6 +37,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentGatewayRouter router;
     private final PaymentMapper paymentMapper;
     private final PaymentTransitionLogService  paymentTransitionLogService;
+    //private final PaymentAdapter paymentAdapter;
 
 
     @Override
@@ -74,6 +76,7 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentRequest.paymentMethod(),
                 paymentRequest.methodDetails());
 
+        paymentTransitionLogService.apply(createdPayment,PaymentEvent.AUTHORIZE_ATTEMPT);
         PaymentResult result = router.initiate(inComingPaymentRequest);
 
         switch (result) {
@@ -128,10 +131,51 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setErrorCode(failure.errorCode());
             payment.setErrorDescription(failure.errorDetails());
             log.warn("payment capture failed, paymentID: {}",paymentId);
-
         }
         // persist the payment object to the db
         paymentRepository.save(payment);
         return paymentMapper.toResponse(payment);
+    }
+
+    @Override
+    public void resolveAuthorization(UUID paymentId, boolean approve, String bankRef, String errorCode, String errorDescription) {
+        // validation if the payment actually exists
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(()-> new ResourceNotFoundException("Payment",paymentId));
+        if(payment.getPaymentStatus()!=PaymentStatus.AUTHORIZING){
+            log.warn("Payment status is not in authorizing state,paymentId:{},paymentStatus: {}",paymentId,payment.getPaymentStatus());
+            return;
+        }
+
+        OrderRecord orderRecord = payment.getOrder();
+        if(approve){
+            paymentTransitionLogService.apply(payment,PaymentEvent.AUTHORIZE_SUCCESS);
+            payment.setBankReference(bankRef);
+            payment.setAuthorizedAt(LocalDateTime.now());
+            // auto-capture
+
+            paymentTransitionLogService.apply(payment,PaymentEvent.CAPTURE_REQUEST);
+            PaymentResult captureResult = router.capture(payment.getPaymentMethod(),paymentId);
+            if(captureResult instanceof PaymentResult.Success success) {
+                paymentTransitionLogService.apply(payment,PaymentEvent.CAPTURE_SUCCESS);
+                payment.setCapturedAt(LocalDateTime.now());
+                orderRecord.setOrderStatus(OrderStatus.PAID);
+            }
+            else if(captureResult instanceof PaymentResult.Failure failure) {
+                paymentTransitionLogService.apply(payment,PaymentEvent.CAPTURE_FAILURE);
+                payment.setErrorCode(failure.errorCode());
+                payment.setErrorDescription(failure.errorDetails());
+
+            }
+        }
+        else {
+            paymentTransitionLogService.apply(payment,PaymentEvent.AUTHORIZE_FAILURE);
+            payment.setErrorCode(errorCode);
+            payment.setErrorDescription(errorDescription);
+        }
+
+        paymentRepository.save(payment);
+        orderRepository.save(orderRecord);
+
     }
 }
