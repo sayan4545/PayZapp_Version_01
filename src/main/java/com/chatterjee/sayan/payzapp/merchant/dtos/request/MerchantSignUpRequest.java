@@ -20,6 +20,7 @@ public record MerchantSignUpRequest(
         String password,
 
         @Size(max = 50, message = "BusinessName should be maximum 50 characters long")
+        @NotNull(message = "Business name is required")
         String businessName,
 
         BusinessType businessType

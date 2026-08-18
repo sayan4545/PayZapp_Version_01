@@ -36,14 +36,14 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // create a merchant
-//        Merchant merchant = Merchant.builder()
-//                .name(merchantSignUpRequest.name())
-//                .email(merchantSignUpRequest.email())
-//                .BusinessName(merchantSignUpRequest.businessName())
-//                .merchantStatus(MerchantStatus.PENDING_KYC)
-//                .businessType(merchantSignUpRequest.businessType())
-//                .build();
-        Merchant merchant = merchantMapper.toEntity(merchantSignUpRequest);
+        Merchant merchant = Merchant.builder()
+                .name(merchantSignUpRequest.name())
+                .email(merchantSignUpRequest.email())
+                .businessName(merchantSignUpRequest.businessName())
+                .merchantStatus(MerchantStatus.PENDING_KYC)
+                .businessType(merchantSignUpRequest.businessType())
+                .build();
+       // Merchant merchant = merchantMapper.toEntity(merchantSignUpRequest);
         merchant.setMerchantStatus(MerchantStatus.PENDING_KYC);
         // Persist the merchant
 
@@ -63,9 +63,9 @@ public class AuthServiceImpl implements AuthService {
 
         // TODO : Use mapstruct to design the response type // DONE
 
-//        return new MerchantResponse(merchant.getId(), merchant.getName(),
-//                merchant.getEmail(), merchant.getBusinessName(),merchant.getBusinessType()
-//        ,merchant.getMerchantStatus());
-        return merchantMapper.toResponse(merchant);
+        return new MerchantResponse(merchant.getId(), merchant.getName(),
+                merchant.getEmail(), merchant.getBusinessName(),merchant.getBusinessType()
+                ,merchant.getMerchantStatus());
+      //  return merchantMapper.toResponse(merchant);
     }
 }

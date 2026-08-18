@@ -21,7 +21,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<MerchantResponse> signUp(@RequestBody @Valid MerchantSignUpRequest merchantSignUpRequest){
+    public ResponseEntity<MerchantResponse> signUp(@Valid @RequestBody  MerchantSignUpRequest merchantSignUpRequest){
         return new ResponseEntity<>(authService.signUp(merchantSignUpRequest), HttpStatus.CREATED);
 
     }

@@ -22,10 +22,12 @@ public class Merchant extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @Column(nullable = false,length = 200)
     private String name;
-    @Column(nullable = false,length = 200)
-    private String BusinessName;
+
+    @Column(name = "business_name", nullable = false,length = 200)
+    private String businessName;
 
     @Column(unique = true)
     private String email;
@@ -61,7 +63,7 @@ public class Merchant extends BaseEntity {
     @Column(length = 30)
     private String settlementBankAccountHolderName;
 
-    // Todo : add auditing layer by extending a base class and add createdAt, updateAt fields
+    // Todo : add auditing layer by extending a base class and add createdAt, updateAt fields // done
 
 
 
