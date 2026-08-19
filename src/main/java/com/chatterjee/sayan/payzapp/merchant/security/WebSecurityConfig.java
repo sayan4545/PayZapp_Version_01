@@ -34,6 +34,16 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public SecurityFilterChain apiKeyFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth-> auth.anyRequest().permitAll())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .build();
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

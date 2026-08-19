@@ -41,14 +41,4 @@ public class JwtUtils {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-
-    public String extractRole(Claims claims){
-        return claims.get("role",String.class);
-    }
-
-    public UUID extractMerchantId(Claims claims){
-        return claims.get("merchant_id",UUID.class);
-    }
-
-
 }
