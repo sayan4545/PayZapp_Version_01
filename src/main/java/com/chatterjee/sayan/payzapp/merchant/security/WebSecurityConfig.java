@@ -15,11 +15,17 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class WebSecurityConfig {
 
+    private static final String[] JWT_ROUTES = {"/v1/auth/**","/v1/merchants/**","/v1/admin/**","/actuator"};
+    private static final String[] API_KEY_ROUTES = {"/v1/orders/**","/v1/payments/**","/v1/vault/**"};
+
     @Bean
     public SecurityFilterChain jwtFilterChain(HttpSecurity http) throws Exception {
         return http
+                .securityMatcher(JWT_ROUTES)
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth-> auth.anyRequest().permitAll())
+                .authorizeHttpRequests(auth-> auth.requestMatchers("/v1/auth/signUp","/v1/auth/login").permitAll()
+                        .anyRequest().authenticated())
+
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();

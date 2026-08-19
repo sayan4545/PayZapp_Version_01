@@ -60,6 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .merchantId(merchantId)
                 .amount(order.getAmount())
                 .paymentStatus(PaymentStatus.CREATED)
+                .idempotencyKey(UUID.randomUUID().toString())
                 .paymentMethod(paymentRequest.paymentMethod())
                 .methodDetails(paymentRequest.methodDetails())
                 .build();

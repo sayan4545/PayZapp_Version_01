@@ -25,7 +25,7 @@ public class PaymentTransitionLogServiceImpl implements PaymentTransitionLogServ
     public PaymentStatus apply(Payment payment, PaymentEvent event) {
         PaymentStatus next = paymentStateMachine
                 .transition(payment.getPaymentStatus(), event);
-        payment.setPaymentStatus(next);
+        //payment.setPaymentStatus(next);
 
         // Build a payment transition log
         PaymentTransitionLog paymentTransitionLog = PaymentTransitionLog.builder()
@@ -36,6 +36,7 @@ public class PaymentTransitionLogServiceImpl implements PaymentTransitionLogServ
                 .actor(PaymentActor.SYSTEM) // TODO : fetch from merchant context
                 .occuredAt(LocalDateTime.now())
                 .build();
+        payment.setPaymentStatus(next);
         paymentTransitionLogRepository.save(paymentTransitionLog);
         return next;
     }
