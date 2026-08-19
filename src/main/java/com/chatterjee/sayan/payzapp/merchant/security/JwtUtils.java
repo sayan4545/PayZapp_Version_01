@@ -46,9 +46,16 @@ public class JwtUtils {
         return claims.get("role",String.class);
     }
 
-    public UUID extractMerchantId(Claims claims){
-        return claims.get("merchant_id",UUID.class);
-    }
+//    public UUID extractMerchantId(Claims claims){
+//        return claims.get("merchant_id",UUID.class);
+//    }
+public UUID extractMerchantId(Claims claims) {
+    String merchantIdStr = claims.get("merchant_id", String.class);
+    return UUID.fromString(merchantIdStr);
+}
+
+
+
 
 
 }
