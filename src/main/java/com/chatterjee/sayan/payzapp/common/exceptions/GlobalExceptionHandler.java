@@ -1,12 +1,17 @@
 package com.chatterjee.sayan.payzapp.common.exceptions;
 
 import com.chatterjee.sayan.payzapp.common.dtos.ErrorResponse;
+import com.chatterjee.sayan.payzapp.common.dtos.FieldErrors;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -33,5 +38,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(Exception exception){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.of(exception.getMessage(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception,
+                                                                               HttpServletRequest request){
+        List<ErrorResponse> fieldErrors = exception.getBindingResult().getFieldErrors().stream()
+                .map(fe-> ErrorResponse.of(fe.getField(),fe.getDefaultMessage()))
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of("Validation failed","Request validation failed"));
+
     }
 }
