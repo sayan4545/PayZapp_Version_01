@@ -1,6 +1,8 @@
 package com.chatterjee.sayan.payzapp.merchant.controllers;
 
+import com.chatterjee.sayan.payzapp.merchant.dtos.request.LoginRequestDto;
 import com.chatterjee.sayan.payzapp.merchant.dtos.request.MerchantSignUpRequest;
+import com.chatterjee.sayan.payzapp.merchant.dtos.response.LoginResponse;
 import com.chatterjee.sayan.payzapp.merchant.dtos.response.MerchantResponse;
 import com.chatterjee.sayan.payzapp.merchant.services.AuthService;
 import jakarta.validation.Valid;
@@ -24,6 +26,11 @@ public class AuthController {
     public ResponseEntity<MerchantResponse> signUp(@Valid @RequestBody  MerchantSignUpRequest merchantSignUpRequest){
         return new ResponseEntity<>(authService.signUp(merchantSignUpRequest), HttpStatus.CREATED);
 
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequestDto loginRequestDto){
+        return ResponseEntity.ok(authService.login(loginRequestDto));
     }
 
 
