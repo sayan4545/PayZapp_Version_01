@@ -14,6 +14,7 @@ import com.chatterjee.sayan.payzapp.merchant.services.ApiKeyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     private final ApiKeyRepository apiKeyRepository;
     private final MerchantRepository merchantRepository;
     private final ApiKeyMapper apiKeyMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -38,7 +40,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         Merchant merchant = merchantRepository.findById(merchantId)
                 .orElseThrow(()-> new ResourceNotFoundException("merchant",merchantId));
 
-        //String keyId = "pzp_"+createApiKeyRequest.environment().name().toUpperCase()+"big_random_string";// TODO : generate a Random string // fixed it
+        //String keyId = "pzp_"+createApiKeyRequest.environment().name().toUpperCase()+"big_random_string";
         String keyId = "pzp_"+createApiKeyRequest
                 .environment()
                 .name()
@@ -52,7 +54,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
                 .builder()
                 .keyId(keyId)
                 .merchant(merchant)
-                .keySecretHash(rawSecret)
+                .keySecretHash(passwordEncoder.encode(rawSecret))
                 .environment(createApiKeyRequest.environment())
                 .build();
 
@@ -105,7 +107,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
         String newRawSecret = RandomizerUtil.randomBase64(96);
         apiKey.setPreviousKeySecretHash(apiKey.getKeySecretHash());
-        apiKey.setKeySecretHash(newRawSecret);
+        apiKey.setKeySecretHash(passwordEncoder.encode(newRawSecret));
 
         apiKey.setRotatedAt(LocalDateTime.now());
         apiKey.setGracePeriodExpiresAt(LocalDateTime.now().plusHours(24));
