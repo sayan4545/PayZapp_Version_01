@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.payment.controller;
 
+import com.chatterjee.sayan.payzapp.merchant.security.MerchantContext;
 import com.chatterjee.sayan.payzapp.payment.dto.request.CreateOrderRequest;
 import com.chatterjee.sayan.payzapp.payment.dto.response.OrderResponse;
 import com.chatterjee.sayan.payzapp.payment.services.OrderService;
@@ -23,14 +24,15 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    UUID merchantId = UUID.fromString("0c8f873c-9018-4990-bd1f-f9dea20cff9d"); // TODO : Get this from merchantContext using spring security
+    //UUID merchantId = UUID.fromString("0c8f873c-9018-4990-bd1f-f9dea20cff9d");
+    private final MerchantContext merchantContext;
 
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request){
 
         return ResponseEntity
-                .status(HttpStatus.CREATED).body(orderService.createOrder(merchantId,request));
+                .status(HttpStatus.CREATED).body(orderService.createOrder(merchantContext.getMerchantId(),request));
 
     }
 }

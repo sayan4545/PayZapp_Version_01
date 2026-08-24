@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.payment.controller;
 
+import com.chatterjee.sayan.payzapp.merchant.security.MerchantContext;
 import com.chatterjee.sayan.payzapp.payment.dto.request.InitPaymentRequest;
 import com.chatterjee.sayan.payzapp.payment.dto.response.PaymentResponse;
 import com.chatterjee.sayan.payzapp.payment.services.PaymentService;
@@ -19,15 +20,16 @@ import java.util.UUID;
 public class PaymentController {
 
     private final PaymentService paymentService;
-    UUID merchantId = UUID.fromString("0c8f873c-9018-4990-bd1f-f9dea20cff9d");// TODO: use security
+    //UUID merchantId = UUID.fromString("0c8f873c-9018-4990-bd1f-f9dea20cff9d");
+    private final MerchantContext merchantContext;
 
     @PostMapping
     public ResponseEntity<PaymentResponse> initiatePayment(@Valid @RequestBody InitPaymentRequest request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(paymentService.initiatePayment(merchantId, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(paymentService.initiatePayment(merchantContext.getMerchantId(), request));
     }
     @PostMapping("/{paymentId}")
     public ResponseEntity<PaymentResponse> capture(@PathVariable UUID paymentId){
-        return ResponseEntity.ok(paymentService.capture(merchantId,paymentId));
+        return ResponseEntity.ok(paymentService.capture(merchantContext.getMerchantId(),paymentId));
     }
 
 
