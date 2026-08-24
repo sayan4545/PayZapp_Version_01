@@ -2,6 +2,7 @@ package com.chatterjee.sayan.payzapp.merchant.services.impl;
 
 import com.chatterjee.sayan.payzapp.common.exceptions.ResourceNotFoundException;
 import com.chatterjee.sayan.payzapp.common.utils.RandomizerUtil;
+import com.chatterjee.sayan.payzapp.merchant.cache.ApiKeyCache;
 import com.chatterjee.sayan.payzapp.merchant.dtos.request.CreateApiKeyRequest;
 import com.chatterjee.sayan.payzapp.merchant.dtos.response.ApiKeyGetResponse;
 import com.chatterjee.sayan.payzapp.merchant.dtos.response.ApiKeyResponse;
@@ -32,6 +33,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     private final MerchantRepository merchantRepository;
     private final ApiKeyMapper apiKeyMapper;
     private final PasswordEncoder passwordEncoder;
+    private final ApiKeyCache apiKeyCache;
 
     @Override
     @Transactional
@@ -92,6 +94,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
         apiKey.setEnabled(false);
         apiKeyRepository.save(apiKey);
+        apiKeyCache.evict(apiKey.getKeyId());
     }
 
     @Override
@@ -113,6 +116,8 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         apiKey.setGracePeriodExpiresAt(LocalDateTime.now().plusHours(24));
 
         apiKeyRepository.save(apiKey);
+
+        apiKeyCache.evict(apiKey.getKeyId());
 
         return new ApiKeyResponse(apiKey.getId(),apiKey.getKeyId(),newRawSecret,apiKey.getEnvironment());
     }
