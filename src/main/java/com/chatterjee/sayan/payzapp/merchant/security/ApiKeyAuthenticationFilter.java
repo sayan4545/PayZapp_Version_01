@@ -1,6 +1,9 @@
 package com.chatterjee.sayan.payzapp.merchant.security;
 
+import com.chatterjee.sayan.payzapp.common.exceptions.RateLimitException;
 import com.chatterjee.sayan.payzapp.common.exceptions.ResourceNotFoundException;
+import com.chatterjee.sayan.payzapp.common.rateLimiting.RateLimitResult;
+import com.chatterjee.sayan.payzapp.common.rateLimiting.RateLimiter;
 import com.chatterjee.sayan.payzapp.merchant.cache.ApiKeyCache;
 import com.chatterjee.sayan.payzapp.merchant.cache.ApiKeyCacheEntry;
 import com.chatterjee.sayan.payzapp.merchant.entities.ApiKey;
@@ -12,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,12 +38,15 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String BASIC = "Basic ";
     private final ApiKeyRepository apiKeyRepository;
-    //private final PasswordEncoder passwordEncoder;
     private final BCryptPasswordEncoder BCRYPT = new  BCryptPasswordEncoder();
     private final MerchantContext merchantContext;
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final ApiKeyCache apiKeyCache;
 
+    private final RateLimiter rateLimiter;
+
+    @Value("${app.rate-limit.use-case.api-key.requests-per-minute:60}")
+    private Integer REQUEST_PER_MINUTE;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -62,11 +69,26 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
             String rawSecret = credentials[1];
             ApiKeyCacheEntry apiKeyEntry = apiKeyCache.get(keyId)
                     .orElseGet(()-> loadAndCache(keyId));
-            //ApiKey apiKey = apiKeyRepository.findByKeyId(keyId)
-                    //.orElseThrow(() -> new BadRequestException("Invalid or missing keyId"));
+
             if (apiKeyEntry == null || !apiKeyEntry.enabled() || secretMatches(rawSecret, apiKeyEntry)) {
                 throw new BadRequestException("Invalid or missing api key");
             }
+
+           /*
+           Implementing rate limiting here. If Rate limited, it will throw an
+           exception, RateLimitException()
+            */
+
+            RateLimitResult rateLimitResult = rateLimiter.check("apiKey:"+keyId,REQUEST_PER_MINUTE,60);
+            if(!rateLimitResult.isAllowed()) throw new RateLimitException("Too many request, try after a minute", rateLimitResult.retryAfterSeconds());
+
+            /*
+            Setting the request per limit and the time remaining through the response
+            object through its header.
+             */
+
+            response.setHeader("X-RateLimit-limit",String.valueOf(REQUEST_PER_MINUTE));
+            response.setHeader("X-RateLimit-remaining",String.valueOf(rateLimitResult.remaining()));
 
             var auth = new UsernamePasswordAuthenticationToken(keyId, null,
                     List.of(new SimpleGrantedAuthority("API_KEY_ROLE")));

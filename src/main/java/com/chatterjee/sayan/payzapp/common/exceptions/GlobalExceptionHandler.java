@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestControllerAdvice
@@ -50,4 +51,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of("Validation failed","Request validation failed"));
 
     }
+
+    @ExceptionHandler(RateLimitException.class)
+    public ResponseEntity<ErrorResponse> handleRateLimitException(RateLimitException exception){
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).
+                header("X-Ratelimit-Remaining","0")
+                        .header("Retry-after",String.valueOf(exception.getRetryAfterSeconds()))
+                                .header("X-RateLimit-Reset",String.valueOf(
+                                        Instant.now().plusSeconds(exception.getRetryAfterSeconds()).getEpochSecond()
+                                )).
+                body(ErrorResponse.of(exception.getMessage(), exception.getMessage()));
+    }
+
+
 }
