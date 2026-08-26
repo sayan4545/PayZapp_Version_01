@@ -1,14 +1,17 @@
 spring:
   application:
     name: ${SPRING_APPLICATION_NAME}
-
-
-
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
 
   jpa:
     hibernate:
@@ -18,5 +21,40 @@ spring:
       hibernate:
         dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
         format_sql: ${SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL}
+vault:
+  master-key : ${VAULT_MASTER_KEY}
+
+
+payment:
+  simulator:
+    poll-interval-ms : 5000
+    chaos-mode : NORMAL
+    method:
+      CARD:
+        min-delay-seconds: 2
+        max-delay-seconds: 6
+        success-rate: 90
+
+      UPI:
+        min-delay-seconds: 1
+        max-delay-seconds: 3
+        success-rate: 98
+
+      INTERNET_BANKING:
+        min-delay-seconds: 3
+        max-delay-seconds: 7
+        success-rate: 90
+
+jwt:
+  secret:
+    key: dontuseinprodjdhjslallkdsndknfjgnkankdnkeflqds
+
+
+app:
+  rate-limit:
+    method: fixed
+    use-case:
+      api-key:
+        requests-per-minute: 2
 
 
