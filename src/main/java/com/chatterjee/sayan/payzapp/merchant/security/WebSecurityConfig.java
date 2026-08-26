@@ -1,5 +1,6 @@
 package com.chatterjee.sayan.payzapp.merchant.security;
 
+import com.chatterjee.sayan.payzapp.common.idempotency.IdempotencyFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ public class WebSecurityConfig {
     private static final String[] API_KEY_ROUTES = {"/v1/orders/**","/v1/payments/**","/v1/vault/**"};
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
+    private final IdempotencyFilter idempotencyFilter;
     
     @Bean
     public SecurityFilterChain jwtFilterChain(HttpSecurity http) throws Exception {
@@ -32,6 +34,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth-> auth.requestMatchers("/v1/auth/signUp","/v1/auth/login").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(idempotencyFilter,JwtAuthenticationFilter.class)
                 .build();
     }
 
@@ -44,6 +47,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth-> auth
                         .anyRequest().authenticated())
                 .addFilterBefore(apiKeyAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(idempotencyFilter,ApiKeyAuthenticationFilter.class)
                 .build();
     }
 
